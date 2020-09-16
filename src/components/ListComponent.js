@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import jQuery from 'jquery/dist/jquery.js';
+import tableDnD from 'tablednd/dist/jquery.tablednd.js';
 
 const ListComponent = ({}) => {
 	
@@ -45,10 +47,9 @@ const ListComponent = ({}) => {
 		}
 	}, [searchKeyword]);
 	
-	console.log(listHeader);
-	console.log(listRows);
-	console.log(searchKeyword);
-	console.log(searchResult);
+	jQuery(document).ready(function() {
+		jQuery("#list-table").tableDnD();
+	});
 	
 	return (
 		<div className="container">
@@ -70,7 +71,7 @@ const ListComponent = ({}) => {
 			</div>
 			<div className="row">
 				<div className="col-12">
-					<table className="table table-bordered table-hover">
+					<table id="list-table" className="table table-bordered table-hover">
 						<thead className="thead-dark">
 						{listHeader ? 
 						listHeader.map((element, index) => {
