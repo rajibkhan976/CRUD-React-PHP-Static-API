@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import jQuery from 'jquery/dist/jquery.js';
 import tableDnD from 'tablednd/dist/jquery.tablednd.js';
 
-const ListComponent = ({}) => {
+const ListComponent = ({ toggleListView }) => {
 	
 	const [listHeader, setListHeader] = useState(null);
 	const [listData, setListData] = useState(null);
@@ -79,7 +79,7 @@ const ListComponent = ({}) => {
 			if (sortListBy.toLowerCase() === "id") {
 				let sortedById = [];
 				listData.sort(function (a, b) {
-						return b.id - a.id;
+						return a.id - b.id;
 					}).map((element) => {
 						sortedById.push(element);
 					});
@@ -187,8 +187,8 @@ const ListComponent = ({}) => {
 	}, [sortedList]);
 	
 	return (
-		<div className="container">
-			<div className="row mt-4 mb-4">
+		<React.Fragment>
+			<div className="row mt-4 mb-1">
 				<div className="col-6">
 					<h1 className="float-left">User list</h1>
 				</div>
@@ -198,7 +198,6 @@ const ListComponent = ({}) => {
 						{listHeader ? 
 						listHeader.map((element, index) => {
 							return <optgroup key={index} label="sort by">
-									  <option>{""}</option>
 									  <option>{element.id.title}</option>
 									  <option>{element.name.title}</option>
 									  <option>{element.created_at.title}</option>
@@ -224,6 +223,13 @@ const ListComponent = ({}) => {
 			</div>
 			<div className="row">
 				<div className="col-12">
+					<button 
+					type="button" 
+					className="btn btn-info float-right mt-3 mb-3"
+					onClick={(event) => toggleListView(event)}
+					>
+					Create list
+					</button>
 					<table id="list-table" className="table table-bordered table-hover">
 						<thead className="thead-dark">
 						{listHeader ? 
@@ -266,7 +272,7 @@ const ListComponent = ({}) => {
 					</table>
 				</div>
 			</div>
-		</div>
+		</React.Fragment>
 	);
 }
 

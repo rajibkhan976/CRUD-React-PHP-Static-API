@@ -1,12 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import ListComponent from './components/ListComponent';
+import DashboardComponent from './components/DashboardComponent';
 
 function App() {
   return (
     <div className="App">
-      <ListComponent />
+      <DashboardComponent />
     </div>
   );
 }
