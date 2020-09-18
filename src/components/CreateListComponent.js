@@ -22,12 +22,83 @@ const CreateListComponent = ({ toggleListView }) => {
 		});
 	}, []);
 	
-	console.log(formFields);
+	const [name, setName] = useState(null);
 	
-	const [formValue, setFormValue] = useState(null);
+	const handleChangeName = (event) => {
+		setName(event.target.value);
+	}
 	
-	const handleChange = (event) => {
-		console.log(event.target.value);
+	const [email, setEmail] = useState(null);
+	
+	const handleChangeEmail = (event) => {
+		setEmail(event.target.value);
+	}
+	
+	const [gender, setGender] = useState("");
+	
+	const handleChangeGender = (event) => {
+		setGender(event.target.value);
+	}
+	
+	const [details, setDetails] = useState(null);
+	
+	const handleChangeDetails = (event) => {
+		setDetails(event.target.value);
+	}
+	
+	const [hobby, setHobby] = useState(null);
+	
+	const handleChangeHobby = (event) => {
+		setHobby(event.target.value);
+	}
+	
+	const handleSubmit = (event) => {
+		let postData = {};
+		if (name !== null) {
+			Object.assign(postData, { "name": name });
+		}
+		if (email !== null) {
+			Object.assign(postData, { "email": email });
+		}
+		if (gender !== "") {
+			Object.assign(postData, { "gender": gender });
+		}
+		if (details !== null) {
+			Object.assign(postData, { "details": details });
+		}
+		if (hobby !== null) {
+			Object.assign(postData, { "hobby": hobby });
+		}
+		if (formFields !== null) {
+			console.log(formFields);
+			formFields.map((element) => {
+				if (!element.id) {
+					if (Object.keys(element).length === Object.keys(postData).length) {
+						createList(postData);
+					}
+				} else {
+					if (Object.keys(element).length - 1 === Object.keys(postData).length) {
+						createList(postData);
+					}
+				}
+				
+			});
+		}
+	}
+	
+	const createList = async (data) => {
+		const response = await fetch(`http://localhost:8080/api/submit_form.php`, {
+			method: 'POST', 
+			mode: 'cors',
+			cache: 'no-cache',
+			body: JSON.stringify(data) 
+		})
+		.then((response) => {
+			console.log(response);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
 	}
 	
 	const dynamicFormCreator = (fields) => {
@@ -38,22 +109,33 @@ const CreateListComponent = ({ toggleListView }) => {
 			fields.map((element, index) => {
 				dynamicFieldsName = Object.keys(element);
 				dynamicFieldsValue = Object.values(element);
-				console.log(dynamicFieldsName);
-				console.log(dynamicFieldsValue);
 			});
 			for (var c = 0; c < dynamicFieldsName.length; c++) {
 				if (dynamicFieldsValue[c].type === "text" ||
-					dynamicFieldsValue[c].type === "hidden" ||
-					dynamicFieldsValue[c].type === "email" ||
-					dynamicFieldsValue[c].type === "repeater"
+					dynamicFieldsValue[c].type === "hidden"
 				) {
 					dynamicInputFields[c] = <div className="form-group" key={c}>
 											<input  
 											className="form-control mb-3"
-											onChange={(event) => handleChange(event)}
+											onChange={(event) => handleChangeName(event)}
 											type={dynamicFieldsValue[c].type}
+											pattern="^[A-Za-z ]+$"
 											placeholder={dynamicFieldsValue[c].title} 
 											required={dynamicFieldsValue[c].required} 
+											/>
+											</div>;
+				}
+				
+				if (dynamicFieldsValue[c].type === "email") {
+					dynamicInputFields[c] = <div className="form-group" key={c}>
+											<input  
+											className="form-control mb-3"
+											onChange={(event) => handleChangeEmail(event)}
+											type={dynamicFieldsValue[c].type}
+											pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+											placeholder={dynamicFieldsValue[c].title} 
+											required={dynamicFieldsValue[c].required}
+											maxLength="200"											
 											/>
 											</div>;
 				}
@@ -62,7 +144,7 @@ const CreateListComponent = ({ toggleListView }) => {
 					dynamicInputFields[c] = <div className="form-group" key={c}>
 											<textarea
 											className="form-control mb-3"
-											onChange={(event) => handleChange(event)}
+											onChange={(event) => handleChangeDetails(event)}
 											placeholder={dynamicFieldsValue[c].title} 
 											required={dynamicFieldsValue[c].required} 
 											/>
@@ -73,9 +155,10 @@ const CreateListComponent = ({ toggleListView }) => {
 					dynamicInputFields[c] = <div className="form-group" key={c}>
 											<select
 											className="form-control mb-3"
-											onChange={(event) => handleChange(event)}
+											onChange={(event) => handleChangeGender(event)}
 											required={dynamicFieldsValue[c].required}
 											>
+											<option key={c} label={"select gender"}>{gender}</option>
 											{(dynamicFieldsValue[c].options) ?
 												dynamicFieldsValue[c].options.map((element, index) => {
 													return <option key={index} label={element.label}>{element.key}</option>
@@ -84,6 +167,18 @@ const CreateListComponent = ({ toggleListView }) => {
 												null
 											}
 											</select>
+											</div>;
+				}
+				
+				if (dynamicFieldsValue[c].type === "repeater") {
+					dynamicInputFields[c] = <div className="form-group" key={c}>
+											<input  
+											className="form-control mb-3"
+											onChange={(event) => handleChangeHobby(event)}
+											type={dynamicFieldsValue[c].type}
+											placeholder={dynamicFieldsValue[c].title} 
+											required={dynamicFieldsValue[c].required} 
+											/>
 											</div>;
 				}
 			}
@@ -111,7 +206,13 @@ const CreateListComponent = ({ toggleListView }) => {
 				<div className="col-8 mt-5">
 					<form>
 						{dynamicFormCreator(formFields)}
-						<button type="submit" className="btn btn-success float-right">Save</button>
+						<button 
+						type="submit" 
+						className="btn btn-success float-right"
+						onClick={(event) => handleSubmit(event)}
+						>
+						Save
+						</button>
 					</form>
 				</div>
 			</div>
