@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import jQuery from 'jquery/dist/jquery.js';
 import tableDnD from 'tablednd/dist/jquery.tablednd.js';
 
-const ListComponent = ({ toggleListView }) => {
+const ListComponent = ({ toggleCreateListView, toggleUpdateListView }) => {
 	
 	const [listHeader, setListHeader] = useState(null);
 	const [listData, setListData] = useState(null);
@@ -225,8 +225,15 @@ const ListComponent = ({ toggleListView }) => {
 				<div className="col-12">
 					<button 
 					type="button" 
+					className="btn btn-info float-right mt-3 mb-3 ml-3"
+					onClick={(event) => toggleUpdateListView(event)}
+					>
+					Update list
+					</button>
+					<button 
+					type="button" 
 					className="btn btn-info float-right mt-3 mb-3"
-					onClick={(event) => toggleListView(event)}
+					onClick={(event) => toggleCreateListView(event)}
 					>
 					Create list
 					</button>

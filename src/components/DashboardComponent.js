@@ -1,21 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import ListComponent from './ListComponent';
 import CreateListComponent from './CreateListComponent';
+import EditListComponent from './EditListComponent';
 
 const DashboardComponent = ({}) => {
 	
-	const [listView, setListView] = useState(false);
+	const [createListView, setCreateListView] = useState(false);
+	const [updateListView, setUpdateListView] = useState(false);
 
-	const toggleListView = (event) => {
-		setListView(!listView);
+	const toggleCreateListView = (event) => {
+		setCreateListView(!createListView);
+	}
+	
+	const toggleUpdateListView = (event) => {
+		setUpdateListView(!updateListView);
 	}
 	
 	return (
 		<div className="container">
-		{listView ?
-			<CreateListComponent toggleListView={toggleListView} />
+		{createListView ?
+			<CreateListComponent toggleCreateListView={toggleCreateListView} />
 			:
-			<ListComponent toggleListView={toggleListView} />
+			(updateListView) ?
+			<EditListComponent toggleUpdateListView={toggleUpdateListView} />
+			:
+			<ListComponent 
+			toggleCreateListView={toggleCreateListView} 
+			toggleUpdateListView={toggleUpdateListView}
+			/>
 		}
 		</div>
 	);
