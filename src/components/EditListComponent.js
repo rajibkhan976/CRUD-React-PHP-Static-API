@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const EditListComponent = ({ toggleUpdateListView }) => {
 	
@@ -108,20 +110,35 @@ const EditListComponent = ({ toggleUpdateListView }) => {
 		}
 	}
 	
+	const [successMessage, setSuccessMessage] = useState(null);
+	const [errorMessage, setErrorMessage] = useState(null);
+	
 	const createList = async (data) => {
+		await setDisable(true);
+		await setSuccessMessage(null);
+		await setErrorMessage(null);
 		const response = await fetch(`http://localhost:8080/api/submit_form.php`, {
 			method: 'POST', 
 			mode: 'cors',
 			cache: 'no-cache',
 			body: JSON.stringify(data) 
 		})
-		.then((response) => {
-			console.log(response);
+		.then(response => response.json())
+		.then((res) => {
+			setSuccessMessage(res.status);
 		})
 		.catch((error) => {
-			console.log(error);
+			setErrorMessage(error);
 		});
 	}
+	
+	const [disable, setDisable] = useState(false);
+	
+	useEffect(() => {
+		if (successMessage !== null) {
+			setDisable(false);
+		}
+	}, [successMessage]);
 	
 	const [dynamicFields, setDynamicFields] = useState(null);
 	
@@ -324,11 +341,38 @@ const EditListComponent = ({ toggleUpdateListView }) => {
 				<div className="col-8 mt-5">
 					<form>
 						{dynamicFormBuilder(formFields)}
+						<p
+						className={
+							(successMessage !== null) ? 
+							"text-success" 
+							:
+							(errorMessage !== null) ?
+							"text-danger"
+							:
+							"no-text"
+							}
+						>
+						{
+							(successMessage !== null) ? 
+							successMessage 
+							:
+							(errorMessage !== null) ?
+							errorMessage
+							:
+							null
+							}
+						</p>
 						<button 
 						type="submit" 
 						className="btn btn-success float-right"
 						onClick={(event) => handleSubmit(event)}
+						disabled={disable}
 						>
+						{disable ?
+							<FontAwesomeIcon className="mr-2" icon={faSpinner} />
+							:
+							null
+						}
 						Save
 						</button>
 					</form>
