@@ -10,7 +10,7 @@ const ListComponent = ({ toggleCreateListView, toggleUpdateListView }) => {
 	const [error, setError] = useState(null);
 	
 	useEffect(() => {
-		fetch(`http://localhost:8080/api/list.php`, {
+		fetch(`http://localhost/api/list.php`, {
 			method: 'GET',
 			mode: 'cors',
 			headers: {
