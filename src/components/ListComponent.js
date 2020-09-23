@@ -10,7 +10,7 @@ const ListComponent = ({ toggleCreateListView, toggleUpdateListView }) => {
 	const [error, setError] = useState(null);
 	
 	useEffect(() => {
-		fetch(`http://localhost/api/list.php`, {
+		fetch(`http://localhost:8080/api/list.php`, {
 			method: 'GET',
 			mode: 'cors',
 			headers: {
@@ -186,6 +186,22 @@ const ListComponent = ({ toggleCreateListView, toggleUpdateListView }) => {
 		}
 	}, [sortedList]);
 	
+	const dynamicTableHeadGenerator = () => {
+		let tableHeaderArr = [];
+		let tableHeaderVal = [];
+		let tableHeader = [];
+		if (listHeader) {
+			listHeader.forEach((element) => {
+				tableHeaderArr = Object.keys(element);
+				tableHeaderVal = Object.values(element);
+			});
+		}
+		tableHeaderArr.forEach((element, index) => {
+			tableHeader[index] = <th scope="col" key={index}>{tableHeaderVal[index].title}</th>;
+		});
+		return tableHeader;
+	}
+	
 	return (
 		<React.Fragment>
 			<div className="row mt-4 mb-1">
@@ -239,18 +255,9 @@ const ListComponent = ({ toggleCreateListView, toggleUpdateListView }) => {
 					</button>
 					<table id="list-table" className="table table-bordered table-hover">
 						<thead className="thead-dark">
-						{listHeader ? 
-						listHeader.map((element, index) => {
-							return <tr key={index}>
-							  <th scope="col">{element.id.title}</th>
-							  <th scope="col">{element.name.title}</th>
-							  <th scope="col">{element.message.title}</th>
-							  <th scope="col">{element.created_at.title}</th>
+							<tr>
+							{listHeader ? dynamicTableHeadGenerator() : null}
 							</tr>
-						})
-						:
-						null
-						}
 						</thead>
 						<tbody>
 						{(listData !== null && listData.length !== 0) ?

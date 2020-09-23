@@ -8,7 +8,7 @@ const CreateListComponent = ({ toggleCreateListView }) => {
 	const [error, setError] = useState(null);
 	
 	useEffect(() => {
-		fetch(`http://localhost/api/get_form.php`, {
+		fetch(`http://localhost:8080/api/get_form.php`, {
 			method: 'GET',
 			mode: 'cors',
 			headers: {
@@ -93,7 +93,7 @@ const CreateListComponent = ({ toggleCreateListView }) => {
 		await setDisable(true);
 		await setSuccessMessage(null);
 		await setErrorMessage(null);
-		const response = await fetch(`http://localhost/api/submit_form.php`, {
+		const response = await fetch(`http://localhost:8080/api/submit_form.php`, {
 			method: 'POST', 
 			mode: 'cors',
 			cache: 'no-cache',
